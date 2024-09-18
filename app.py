@@ -17,7 +17,7 @@ def generate_audio(user):
         voices = engine.getProperty('voices')
         print("Voices")
         for v in voices:
-            print(v.id)
+            print(v)
 
         print("End Voices")
         # engine.setProperty('voice', voices[user[4]].id)
