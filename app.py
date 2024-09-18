@@ -44,7 +44,10 @@ def tts():
     if(user[1]):
         return send_file(user[2], as_attachment=True)
     
-    return jsonify({"message": "Done"},200)
+    engine = pyttsx3.init()
+    voices = engine.getProperty('voices')
+    
+    return jsonify({"message": voices[user[4]].id},200)
 
 if __name__ == '__main__':
     app.run(debug=True)
