@@ -23,10 +23,10 @@ def generate_audio(user):
     engine.runAndWait()
     engine.stop()
 
-def tts_process(user):
-    p = Process(target=generate_audio, args=(user,))
-    p.start()
-    p.join()
+# def tts_process(user):
+#     p = Process(target=generate_audio, args=(user,))
+#     p.start()
+#     p.join()
 
 @app.route('/back', methods=['POST'])
 def tts():
@@ -38,8 +38,8 @@ def tts():
         user.append(request_data[val])
         print(request_data[val])
 
-    # generate_audio(user)
-    tts_process(user)
+    generate_audio(user)
+    # tts_process(user)
 
     if(user[1]):
         return send_file(user[2], as_attachment=True)
