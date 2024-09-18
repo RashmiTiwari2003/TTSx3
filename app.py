@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import pyttsx3
 import os
-from waitress import serve
+# from waitress import serve
 from multiprocessing import Process
 
 app = Flask(__name__)
@@ -50,8 +50,8 @@ def tts():
     
     return jsonify({"message": voices[user[4]].id},200)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8080)
+    app.run(debug=True)
+
+# if __name__ == '__main__':
+#     serve(app, host='0.0.0.0', port=8080)

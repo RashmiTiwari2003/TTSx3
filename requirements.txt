@@ -1,4 +1,3 @@
 Flask
 Flask-Cors
 pyttsx3==2.90
-gunicorn==20.1.0
