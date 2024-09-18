@@ -15,7 +15,13 @@ def route():
 def generate_audio(user):
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[user[4]].id)
+    print("Voices")
+    for v in voices:
+        print(v.id)
+
+    print("End Voices")
+    # engine.setProperty('voice', voices[user[4]].id)
+    engine.setProperty('voice', voices[0].id)
     engine.setProperty('rate', user[5])
     engine.setProperty('volume', user[3])
     engine.say(user[0])
@@ -48,7 +54,7 @@ def tts():
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
     
-    return jsonify({"message": voices[user[4]].id},200)
+    return jsonify({"message":"Done"},200)
 
 if __name__ == '__main__':
     app.run(port=5000)
