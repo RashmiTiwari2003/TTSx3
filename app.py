@@ -1,8 +1,10 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
-import pyttsx3
+from gtts import gTTS
+from pygame import mixer
 import os
-from multiprocessing import Process
+import time
+import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -11,59 +13,57 @@ CORS(app)
 def route():
     return "Hello"
 
-def generate_audio(user):
+def generate_audio():
+    text="What are you doing?"
+    tts=gTTS(text,lang='en')
+    tts.save('output.mp3')
+
+def delete_file(filename):
+    time.sleep(2)
     try:
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        print("Voices")
-        for v in voices:
-            print(v)
-
-        print("End Voices")
-        # engine.setProperty('voice', voices[user[4]].id)
-        engine.setProperty('voice', voices[0].id)
-        engine.setProperty('rate', user[5])
-        engine.setProperty('volume', user[3])
-        engine.say(user[0])
-        if(user[1]):
-            engine.save_to_file(user[0], user[2])
-        engine.runAndWait()
-        engine.stop()
-
+        os.remove(filename)
+        print(f"{filename} has been deleted.")
     except Exception as e:
-        print(f"Error in generate_audio: {e}")
-        raise
-
-# def tts_process(user):
-#     p = Process(target=generate_audio, args=(user,))
-#     p.start()
-#     p.join()
+        print(f"Error deleting file {filename}: {str(e)}")
 
 @app.route('/back', methods=['POST'])
 def tts():
+    user=[]
+    request_data=request.get_json()
+
+    for val in request_data:
+        user.append(request_data[val])
+        print(request_data[val])
+
     try:
-        user=[]
-        request_data=request.get_json()
-        # print(request_data)
+        generate_audio()
 
-        for val in request_data:
-            user.append(request_data[val])
-            print(request_data[val])
+        mixer.init()
+        mixer.music.load("output.mp3")
+        mixer.music.play()
 
-        generate_audio(user)
-        # tts_process(user)
+        while mixer.music.get_busy():
+            continue
 
-        if(user[1]):
-            return send_file(user[2], as_attachment=True)
-        
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        
-        return jsonify({"message":"Done"},200)
+        mixer.music.stop()
+        mixer.quit()
+
+        if(user[4]):
+            threading.Thread(target=delete_file, args=('output.mp3',)).start()
+            return send_file('output.mp3', as_attachment=True)
+        else:
+            return jsonify({"message":"Done"},200)
 
     except Exception as e:
-        print(f"Error in tts route: {e}")
-        return jsonify({"error": "An error occurred while processing your request"}), 500
+        return jsonify({'error': str(e)}), 500
+
+@app.after_request
+def cleanup(response):
+    try:
+        os.remove("output.mp3")
+    except Exception as e:
+        app.logger.error(f"Error deleting file: {str(e)}")
+    return response
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(debug=True)

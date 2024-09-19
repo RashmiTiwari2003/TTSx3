@@ -1,4 +1,4 @@
 Flask
 Flask-Cors
-pyttsx3
-gunicorn
+gtts
+pygame
