@@ -1,6 +1,8 @@
 from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 from gtts import gTTS
+from pydub import AudioSegment
+from pydub.playback import play
 # from pygame import mixer
 import os
 import time
@@ -37,6 +39,10 @@ def tts():
 
     try:
         generate_audio()
+
+        audio = AudioSegment.from_mp3("output.mp3")
+
+        play(audio)
 
         # mixer.init()
         # mixer.music.load("output.mp3")
