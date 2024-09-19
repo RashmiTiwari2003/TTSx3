@@ -48,11 +48,11 @@ def tts():
         # mixer.music.stop()
         # mixer.quit()
 
-        if(user[4]):
-            threading.Thread(target=delete_file, args=('output.mp3',)).start()
-            return send_file('output.mp3', as_attachment=True)
-        else:
-            return jsonify({"message":"Done"},200)
+        # if(user[4]):
+        threading.Thread(target=delete_file, args=('output.mp3',)).start()
+        return send_file('output.mp3', as_attachment=True)
+        # else:
+        #     return jsonify({"message":"Done"},200)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
