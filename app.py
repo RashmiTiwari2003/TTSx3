@@ -1,7 +1,7 @@
 from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 from gtts import gTTS
-from pygame import mixer
+# from pygame import mixer
 import os
 import time
 import threading
@@ -38,15 +38,15 @@ def tts():
     try:
         generate_audio()
 
-        mixer.init()
-        mixer.music.load("output.mp3")
-        mixer.music.play()
+        # mixer.init()
+        # mixer.music.load("output.mp3")
+        # mixer.music.play()
 
-        while mixer.music.get_busy():
-            continue
+        # while mixer.music.get_busy():
+        #     continue
 
-        mixer.music.stop()
-        mixer.quit()
+        # mixer.music.stop()
+        # mixer.quit()
 
         if(user[4]):
             threading.Thread(target=delete_file, args=('output.mp3',)).start()
