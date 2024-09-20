@@ -12,10 +12,9 @@ CORS(app)
 def route():
     return "Hello"
 
-def generate_audio():
-    text="What are you doing?"
-    tts=gTTS(text,lang='en')
-    tts.save('output.mp3')
+def generate_audio(user):
+    tts=gTTS(user[0],lang=user[1] ,tld=user[2])
+    tts.save(user[6])
 
 def delete_file(filename):
     time.sleep(2)
@@ -35,21 +34,13 @@ def tts():
         print(request_data[val])
 
     try:
-        generate_audio()
+        generate_audio(user)
 
-        threading.Thread(target=delete_file, args=('output.mp3',)).start()
-        return send_file('output.mp3', as_attachment=True)
+        threading.Thread(target=delete_file, args=(user[6],)).start()
+        return send_file(user[6], as_attachment=True)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@app.after_request
-def cleanup(response):
-    try:
-        os.remove("output.mp3")
-    except Exception as e:
-        app.logger.error(f"Error deleting file: {str(e)}")
-    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
